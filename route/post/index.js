@@ -19,6 +19,7 @@ const getPosts = (req, res) => {
 
 const getPost = (req, res) => {
   Post.findById(req.params.id)
+    .populate("user", "name studentID -_id")
     .then(post => {
       if (post) {
         res.json(post);
@@ -69,11 +70,15 @@ const LikePost = (req, res) => {
 const commentPost = (req, res) => {
   Post.findById(req.params.id)
     .then(post => {
+      // console.log(req.body);
+
       const newComment = {
         comment: req.body.comment,
-        user: req.body.user,
+        createdBy: req.body.createdBy,
         date: req.body.date
       };
+
+      console.log(newComment);
 
       // Add to comments array
       post.comments.unshift(newComment);
@@ -91,6 +96,6 @@ router.get("/:id", getPost); //done
 router.post("/", checkPCMember, createPost); //done
 router.delete("/:id", checkPCMember, deletePost);
 router.post("/like/:id", checkAuth, LikePost); //done
-router.post("/comment/:id/:comment_id", checkAuth, commentPost);
+router.post("/comment/:id", checkAuth, commentPost);
 
 module.exports = router;
