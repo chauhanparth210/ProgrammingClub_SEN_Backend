@@ -9,6 +9,7 @@ const app = express();
 const port = 5000 || process.env.PORT;
 
 const auth = require("./route/auth");
+const post = require("./route/post");
 
 app.use(morgan("dev")); // logging request
 app.use(helmet()); // Sanitization of requests
@@ -29,6 +30,7 @@ conn.on("connected", () => {
 
 //routes
 app.use("/auth", auth);
+app.use("/post", post);
 
 // 404
 app.use(function(req, res, next) {

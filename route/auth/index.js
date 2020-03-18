@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 
 const User = require("../../models/user");
 
-const checkPCConvener = require("../../middleware/checkPCConvener");
+const { checkPCConvener } = require("../../middleware/checkAuthenticity");
 
 const {
   sendConfirmationMail,
@@ -15,7 +15,7 @@ const saltRounds = 10;
 
 const signIn = (req, res) => {
   User.findOne({ studentID: req.body.studentID })
-    .select("-__v -_id")
+    .select("-__v")
     .exec((error, user) => {
       if (error) {
         console.log(error);
@@ -32,8 +32,9 @@ const signIn = (req, res) => {
             return res.status(500).json({ message: "Auth failed!.." });
           }
           if (result) {
-            const { studentID, name, isPCMember, isPCConvener } = user;
+            const { studentID, name, isPCMember, isPCConvener, _id } = user;
             let flagPCConvener = false;
+
             if (isPCConvener) {
               flagPCConvener = true;
             }
@@ -53,7 +54,8 @@ const signIn = (req, res) => {
               user: {
                 studentID,
                 name,
-                isPCMember
+                isPCMember,
+                id: _id
               }
             });
           } else res.status(500).json({ message: "Incorrect Password!.." });
