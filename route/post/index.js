@@ -48,9 +48,9 @@ const deletePost = (req, res) => {
     Post.findById(req.params.id)
       .then(post => {
         // Check for post owner
-        if (post.user.toString() !== req.user.id) {
-          return res.status(401).json({ notauthorized: "User not authorized" });
-        }
+        // if (post.user.toString() !== req.user.id) {
+        //   return res.status(401).json({ notauthorized: "User not authorized" });
+        // }
 
         // Delete
         post.remove().then(() => res.json({ success: true }));
