@@ -27,4 +27,5 @@
 
   ``` bash
    git pull 
+   yarn 
   ```
