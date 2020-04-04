@@ -25,6 +25,6 @@
   ```
 - For fatching updates 
 
-```
-git pull
-```
+  ``` bash
+   git pull 
+  ```
