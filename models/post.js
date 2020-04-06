@@ -5,39 +5,39 @@ const Schema = mongoose.Schema;
 const PostSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
-    ref: "user"
+    ref: "user",
   },
   title: {
-    type: String
+    type: String,
   },
   post: {
     type: Object,
-    required: true
+    required: true,
   },
   likes: {
     type: Number,
-    default: 0
+    default: 0,
   },
   comments: [
     {
       createdBy: {
-        type: String
+        type: String,
         // required: true
       },
       comment: {
         type: String,
-        required: true
+        required: true,
       },
       date: {
         type: Date,
-        default: Date.now
-      }
-    }
+        default: Date.now,
+      },
+    },
   ],
   date: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
-module.exports = Post = mongoose.model("post", PostSchema);
+module.exports = mongoose.model("post", PostSchema);

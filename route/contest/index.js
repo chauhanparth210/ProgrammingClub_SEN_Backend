@@ -69,7 +69,12 @@ const codeforces = new Promise(function (resolve, reject) {
           endTime: contest.startTimeSeconds + contest.durationSeconds,
         });
       });
-      resolve({ upcoming: upcomingContest, past: pastContest });
+      resolve({
+        codeforces: {
+          upcoming: upcomingContest,
+          past: pastContest,
+        },
+      });
     });
 });
 

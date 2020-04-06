@@ -8,7 +8,7 @@ const { checkPCConvener } = require("../../middleware/checkAuthenticity");
 
 const {
   sendConfirmationMail,
-  sendPasswordResetMail
+  sendPasswordResetMail,
 } = require("../../utils/sendEmail");
 
 const saltRounds = 10;
@@ -43,7 +43,7 @@ const signIn = (req, res) => {
               {
                 studentID,
                 isPCMember,
-                isPCConvener: flagPCConvener
+                isPCConvener: flagPCConvener,
               },
               process.env.SECRET_KEY,
               { expiresIn: "5h" }
@@ -55,8 +55,8 @@ const signIn = (req, res) => {
                 studentID,
                 name,
                 isPCMember,
-                id: _id
-              }
+                id: _id,
+              },
             });
           } else res.status(500).json({ message: "Incorrect Password!.." });
         });
@@ -67,7 +67,7 @@ const signIn = (req, res) => {
 const studentVerification = (req, res) => {
   const user = jwt.verify(req.params.token, process.env.SECRET_KEY);
   const { studentID } = user;
-  User.update({ studentID }, { isStudentVerified: true }, err => {
+  User.update({ studentID }, { isStudentVerified: true }, (err) => {
     if (err) {
       console.log(err);
       return res
@@ -84,18 +84,18 @@ const signUp = (req, res) => {
       console.log(error);
       return res.status(500).json({ message: "Database query Failed!.." });
     } else if (user === null) {
-      bcrypt.genSalt(saltRounds, function(err, salt) {
+      bcrypt.genSalt(saltRounds, function (err, salt) {
         bcrypt.hash(password, salt, (err, hash) => {
           User.create(
             {
               studentID,
               name,
-              password: hash
+              password: hash,
             },
-            error => {
+            (error) => {
               if (error) {
                 return res.status(500).json({
-                  message: "Database error.Failed to create a user!.."
+                  message: "Database error.Failed to create a user!..",
                 });
               } else {
                 sendConfirmationMail(studentID);
@@ -116,7 +116,7 @@ const signUp = (req, res) => {
 const sendPasswordResetLink = (req, res) => {
   const { studentID } = req.body;
   User.findOne({ studentID })
-    .then(data => {
+    .then((data) => {
       if (data) {
         sendPasswordResetMail(studentID);
         return res.status(201).json({ message: "Plaese check your email!." });
@@ -124,7 +124,7 @@ const sendPasswordResetLink = (req, res) => {
         throw new Error("Database Error...");
       }
     })
-    .catch(err => {
+    .catch((err) => {
       return res.status(500).json({ message: "User is not exist!..." });
     });
 };
@@ -133,15 +133,15 @@ const resetPassword = (req, res) => {
   const { password } = req.body;
   const user = jwt.verify(req.params.token, process.env.SECRET_KEY);
   const { studentID } = user;
-  bcrypt.genSalt(saltRounds, function(err, salt) {
+  bcrypt.genSalt(saltRounds, function (err, salt) {
     bcrypt.hash(password, salt, (err, hash) => {
       User.findOneAndUpdate({ studentID }, { password: hash })
-        .then(user => {
+        .then((user) => {
           res
             .status(201)
             .json({ message: "Password is changed Successfully." });
         })
-        .catch(err => {
+        .catch((err) => {
           res.status(500).json({ message: "Password is not changed!.." });
         });
     });
@@ -151,10 +151,10 @@ const resetPassword = (req, res) => {
 const getAccounts = (req, res) => {
   User.find({ isSupervisor: false })
     .select("-__v -_id -password -isStudentVerified")
-    .then(result => {
+    .then((result) => {
       res.status(201).json(result);
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).json({ message: "Database query failed!..." });
     });
 };
@@ -165,14 +165,14 @@ const changeRoleAsPCMember = (req, res) => {
     { studentID },
     {
       $set: {
-        isPCMember: true
-      }
+        isPCMember: true,
+      },
     }
   )
-    .then(result => {
+    .then((result) => {
       res.status(201).json({ message: "Change Role to HMC Convener." });
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).json({ message: "Database query failed!..." });
     });
 };

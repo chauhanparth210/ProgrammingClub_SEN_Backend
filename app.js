@@ -11,6 +11,7 @@ const port = 5000 || process.env.PORT;
 const auth = require("./route/auth");
 const post = require("./route/post");
 const contest = require("./route/contest");
+const qna = require("./route/qna");
 
 app.use(morgan("dev")); // logging request
 app.use(helmet()); // Sanitization of requests
@@ -18,7 +19,7 @@ app.use(express.json()); // Parsing requests as in JSON format
 app.use(cors()); //Use CORS
 
 // Connect to database
-mongoose.connect(process.env.DATABASE_STRING, {
+mongoose.connect(process.env.DATABASE_STRING_ONLINE, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -33,6 +34,7 @@ conn.on("connected", () => {
 app.use("/auth", auth);
 app.use("/post", post);
 app.use("/contest", contest);
+app.use("/question", qna);
 
 // 404
 app.use(function (req, res, next) {
