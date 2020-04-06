@@ -23,3 +23,9 @@
    yarn 
    yarn start
   ```
+- For fatching updates 
+
+  ``` bash
+   git pull 
+   yarn 
+  ```
