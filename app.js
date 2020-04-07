@@ -19,7 +19,7 @@ app.use(express.json()); // Parsing requests as in JSON format
 app.use(cors()); //Use CORS
 
 // Connect to database
-mongoose.connect(process.env.DATABASE_STRING_ONLINE, {
+mongoose.connect(process.env.DATABASE_STRING, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
