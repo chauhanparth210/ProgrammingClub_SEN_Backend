@@ -6,7 +6,7 @@ const getAllQuestions = (req, res) => {
     .populate("user", ["name", "studentID"])
     .select("user question date")
     .then((response) => {
-      res.status(200).json({ question: response });
+      res.status(200).json(response);
     })
     .catch((err) => {
       res.status(500).json({ message: "Failed to query database..." });
@@ -17,7 +17,8 @@ const getQuestionAnswer = (req, res) => {
   const qID = req.params.qID;
   QnA.findById(qID)
     .populate("user", ["name", "studentID"])
-    .select("-_id -__v")
+    .populate("answers.user", ["name", "studentID"])
+    .select("-__v")
     .then((response) => {
       res.status(200).json({ question: response });
     })
@@ -78,11 +79,13 @@ const postUpVote = (req, res) => {
   const { user } = req.body;
   const qID = req.params.qID;
   const ansID = req.params.ansID;
-  QnA.findById(qID).then((response) => {
-    response.findById(ansID).then((data) => {
-      console.log(data);
+  QnA.aggregate()
+    .match({
+      _id: qID,
+    })
+    .exec(function (err, doc) {
+      console.log(doc);
     });
-  });
 };
 
 const router = express.Router();
