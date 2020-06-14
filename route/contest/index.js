@@ -1,6 +1,7 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
 const express = require("express");
+const Contest = require('../../models/Contest')
 
 const hackerrank = new Promise(function (resolve, reject) {
   axios
@@ -17,7 +18,7 @@ const hackerrank = new Promise(function (resolve, reject) {
         tempContest = $(el)
           .find(".contest-name.head-col.truncate.txt-navy")
           .text();
-        liveContest.push({ title: `${tempContest}` });
+        liveContest.push({ title: `${tempContest}`, place: 'Hackerrank' });
       });
       const pastContests = $(
         ".active_contests.archived-contest-container.fnt-wt-600"
@@ -26,7 +27,7 @@ const hackerrank = new Promise(function (resolve, reject) {
         tempContest = $(el)
           .find(".contest-name.head-col.truncate.txt-alt-grey")
           .text();
-        pastContest.push({ title: `${tempContest}` });
+        pastContest.push({ title: `${tempContest}`, place: 'Hackerrank' });
         resolve({
           hackerrank: {
             live: liveContest,
@@ -54,6 +55,7 @@ const codeforces = new Promise(function (resolve, reject) {
       temp.map((contest) => {
         upcomingContest.push({
           title: `${contest.name}`,
+          place: 'Codeforces',
           startTime: contest.startTimeSeconds,
           endTime: contest.startTimeSeconds + contest.durationSeconds,
         });
@@ -65,6 +67,7 @@ const codeforces = new Promise(function (resolve, reject) {
       temp2.map((contest) => {
         pastContest.push({
           title: `${contest.name}`,
+          place: 'Codeforces',
           startTime: contest.startTimeSeconds,
           endTime: contest.startTimeSeconds + contest.durationSeconds,
         });
@@ -156,6 +159,7 @@ function getData(url) {
           startTime: temp[0],
           endTime: temp[1],
           phase: url.phase,
+          place: 'Hackerearth'
         });
       })
       .catch((e) => reject(e, "node"));
@@ -181,5 +185,19 @@ const getContest = (req, res) => {
 
 const router = express.Router();
 router.get("/", getContest);
-
+router.get("/discussion/:title", async (req, res) => {
+  const contest = await Contest.findOne({title: req.params.title})
+  if(contest) {
+    return res.status(200).json(contest)
+  }
+  else {
+    const newC = await Contest.create({title: req.params.title})
+    return res.status(200).json(newC)
+  }
+})
+router.get("/all", async (req, res) => {
+  //await Contest.deleteMany()
+  const contests = await Contest.find()
+  return res.status(200).json(contests)
+})
 module.exports = router;
