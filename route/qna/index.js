@@ -16,7 +16,7 @@ const getAllQuestions = (req, res) => {
 const getQuestionAnswer = (req, res) => {
   const qID = req.params.qID;
   QnA.findById(qID)
-    .populate("user", ["name", "studentID"])
+    .populate("answers.user", ["name", "studentID"])
     .select("-_id -__v")
     .then((response) => {
       res.status(200).json({ question: response });
