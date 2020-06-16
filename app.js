@@ -6,8 +6,8 @@ const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
-// const server = require("http").Server(app);
-// const io = require("socket.io")(server);
+const server = require("http").Server(app);
+const io = require("socket.io")(server);
 const port = process.env.PORT || 5000;
 
 const auth = require("./route/auth");
@@ -15,9 +15,8 @@ const post = require("./route/post");
 const contest = require("./route/contest");
 const qna = require("./route/qna");
 
-// const Contest = require("./models/Contest");
+const Contest = require("./models/Contest");
 
-// app.use(morgan("dev")); // logging request
 app.use(helmet()); // Sanitization of requests
 app.use(express.json()); // Parsing requests as in JSON format
 app.use(cors()); //Use CORS
@@ -33,23 +32,23 @@ const conn = mongoose.connection;
 conn.on("error", console.error.bind(console, "MongoDB Error: "));
 conn.on("connected", () => {
   console.log("Connected To Database...");
-  // io.on("connection", (socket) => {
-  //   sendStatus = (s) => {
-  //     socket.emit("status", s);
-  //   };
+  io.on("connection", (socket) => {
+    sendStatus = (s) => {
+      socket.emit("status", s);
+    };
 
-  //   Contest.find().then((contests) => {
-  //     socket.emit("output", contests);
-  //   });
+    Contest.find().then((contests) => {
+      socket.emit("output", contests);
+    });
 
-  //   socket.on("addcomment", async (data) => {
-  //     const cid = data.contest._id;
-  //     const contest = await Contest.findByIdAndUpdate(cid, data.contest, {
-  //       new: true,
-  //     });
-  //     io.emit("newcomment", contest);
-  //   });
-  // });
+    socket.on("addcomment", async (data) => {
+      const cid = data.contest._id;
+      const contest = await Contest.findByIdAndUpdate(cid, data.contest, {
+        new: true,
+      });
+      io.emit("newcomment", contest);
+    });
+  });
 });
 
 //routes
@@ -69,5 +68,5 @@ app.use(function (err, req, res, next) {
 });
 
 // Start Server
-app.listen(port, () => console.log("Server running on port", port, "..."));
-// server.listen(port, () => console.log("Server running on port", port, "..."));
+// app.listen(port, () => console.log("Server running on port", port, "..."));
+server.listen(port, () => console.log("Server running on port", port, "..."));
