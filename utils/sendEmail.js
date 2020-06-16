@@ -7,20 +7,20 @@ var transporter = nodemailer.createTransport({
   port: "587",
   auth: {
     user: process.env.EMAIL,
-    pass: process.env.PASSWORD
+    pass: process.env.PASSWORD,
   },
   secureConnection: "false",
   tls: {
     ciphers: "SSLv3",
-    rejectUnauthorized: false
-  }
+    rejectUnauthorized: false,
+  },
 });
 
-const sendConfirmationMail = studentID => {
+const sendConfirmationMail = (studentID) => {
   const token = jwt.sign({ studentID }, process.env.SECRET_KEY, {
-    expiresIn: "5d"
+    expiresIn: "5d",
   }); // Generate Token
-  const url = `http://localhost:5000/auth/token/${token}`;
+  const url = `https://pc-daiict.herokuapp.com/auth/token/${token}`;
 
   console.log(url);
 
@@ -32,7 +32,7 @@ const sendConfirmationMail = studentID => {
       `Hello, <strong>${studentID}</strong> <br><br>` +
       `<p>Please click <a href="${url}">here</a> to verify your student acccount.</p><br>` +
       "Regards,<br>" +
-      "Programming Club."
+      "Programming Club.",
   };
 
   // Send mail with defined transport object
@@ -42,11 +42,11 @@ const sendConfirmationMail = studentID => {
   });
 };
 
-const sendPasswordResetMail = studentID => {
+const sendPasswordResetMail = (studentID) => {
   const token = jwt.sign({ studentID }, process.env.SECRET_KEY, {
-    expiresIn: "5d"
+    expiresIn: "5d",
   }); // Generate Token
-  const url = `http://localhost:3000/reset-password/${token}`;
+  const url = `https://pc-da.herokuapp.com/reset-password/${token}`;
 
   const mailOptions = {
     from: '"Programming Club" <sengrp13@gmail.com>',
@@ -56,7 +56,7 @@ const sendPasswordResetMail = studentID => {
       `Hello, <strong>${studentID}</strong> <br><br>` +
       `<p>Please click <a href="${url}">here</a> to change the password.</p><br>` +
       "Regards,<br>" +
-      "Programming Club."
+      "Programming Club.",
   };
 
   // Send mail with defined transport object
@@ -68,5 +68,5 @@ const sendPasswordResetMail = studentID => {
 
 module.exports = {
   sendConfirmationMail,
-  sendPasswordResetMail
+  sendPasswordResetMail,
 };
