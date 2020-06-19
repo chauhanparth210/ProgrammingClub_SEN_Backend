@@ -138,9 +138,9 @@ function parallelProcess(urls) {
 }
 
 const getContest = async (req, res) => {
-  console.log("getContest");
+  // console.log("getContest");
   const response = await Promise.all([codeforces, hackerearth])
-  console.log(response);
+  // console.log(response);
   return res.status(201).json(response);
 };
 
