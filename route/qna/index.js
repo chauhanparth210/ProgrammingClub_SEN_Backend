@@ -74,15 +74,26 @@ const postQuestionAnswer = (req, res) => {
     });
 };
 
-const postUpVote = (req, res) => {
+const postUpVote = async (req, res) => {
   const { user } = req.body;
   const qID = req.params.qID;
   const ansID = req.params.ansID;
-  QnA.findById(qID).then((response) => {
-    response.findById(ansID).then((data) => {
-      console.log(data);
-    });
-  });
+  await QnA.update(
+    { _id: qID, "answers._id": ansID },
+    { $inc: { "answers.$.vote": 1 } }
+  );
+  res.status(200).json({ message: "UpVote successfully!..." });
+};
+
+const postDownVote = async (req, res) => {
+  const { user } = req.body;
+  const qID = req.params.qID;
+  const ansID = req.params.ansID;
+  await QnA.update(
+    { _id: qID, "answers._id": ansID },
+    { $inc: { "answers.$.vote": -1 } }
+  );
+  res.status(200).json({ message: "DownVote successfully!..." });
 };
 
 const router = express.Router();
@@ -93,5 +104,6 @@ router.post("/", postQuestion);
 router.delete("/:qID", deleteQuestion);
 router.post("/:qID", postQuestionAnswer);
 router.post("/:qID/:ansID/upvote", postUpVote);
+router.post("/:qID/:ansID/downvote", postDownVote);
 
 module.exports = router;
