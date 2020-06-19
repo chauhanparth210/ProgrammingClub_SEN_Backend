@@ -137,14 +137,11 @@ function parallelProcess(urls) {
   }
 }
 
-const getContest = (req, res) => {
-  console.log("heljklsfl");
-  Promise.all([codeforces, hackerearth])
-    .then((response) => {
-      console.log(response);
-      res.status(201).json(response);
-    })
-    .catch((e) => console.log(e, "Hello"));
+const getContest = async (req, res) => {
+  console.log("getContest");
+  const response = await Promise.all([codeforces, hackerearth])
+  console.log(response);
+  return res.status(201).json(response);
 };
 
 const router = express.Router();

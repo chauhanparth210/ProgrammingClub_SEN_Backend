@@ -13,6 +13,9 @@ const Contest = new mongoose.Schema({
         posted_at: {
             type: Date,
             default: Date.now,
+        },
+        name : {
+            type:String,
         }
     })]
 })

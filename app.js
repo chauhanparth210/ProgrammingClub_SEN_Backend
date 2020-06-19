@@ -42,6 +42,7 @@ conn.on("connected", () => {
     });
 
     socket.on("addcomment", async (data) => {
+      // console.log(data,"contest data")
       const cid = data.contest._id;
       const contest = await Contest.findByIdAndUpdate(cid, data.contest, {
         new: true,
