@@ -23,6 +23,14 @@
    yarn 
    yarn start
   ```
+  
+ - To run test
+
+    ``` bash
+     yarn
+     yarn test
+    ```
+  
 - For fatching updates 
 
   ``` bash
